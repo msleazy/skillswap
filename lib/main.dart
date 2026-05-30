@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'core/app_theme.dart';
 import 'providers/auth_provider.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/home/home_screen.dart';
+import 'screens/onboarding/onboarding_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const SkillSwapApp());
+  final prefs = await SharedPreferences.getInstance();
+  final seenOnboarding = prefs.getBool('seen_onboarding') ?? false;
+  runApp(SkillSwapApp(seenOnboarding: seenOnboarding));
 }
 
 class SkillSwapApp extends StatelessWidget {
-  const SkillSwapApp({super.key});
+  final bool seenOnboarding;
+  const SkillSwapApp({super.key, required this.seenOnboarding});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +35,9 @@ class SkillSwapApp extends StatelessWidget {
         title: 'SkillSwap',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
-        home: const AuthWrapper(),
+        home: seenOnboarding
+            ? const AuthWrapper()
+            : const OnboardingScreen(),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/app_theme.dart';
 import '../auth/login_screen.dart';
 
@@ -43,17 +44,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
-  void _nextPage() {
+  Future<void> _markOnboardingSeen() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("seen_onboarding", true);
+  }
+
+  Future<void> _nextPage() async {
     if (_currentPage < _pages.length - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     } else {
-      Navigator.pushReplacement(
+      await _markOnboardingSeen();
+      if (mounted) { Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-      );
+        MaterialPageRoute(builder: (_) => const LoginScreen())); }
     }
   }
 
