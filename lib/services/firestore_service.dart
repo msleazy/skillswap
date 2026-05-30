@@ -6,7 +6,7 @@ import '../core/app_constants.dart';
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Obtener todas las publicaciones en tiempo real
+  // Obtener TODOS los posts y filtrar en cliente
   Stream<List<PostModel>> getPosts() {
     return _firestore
         .collection(AppConstants.postsCollection)
@@ -17,19 +17,12 @@ class FirestoreService {
             .toList());
   }
 
-  // Obtener publicaciones por categoría
+  // Filtrar por categoría en el cliente
   Stream<List<PostModel>> getPostsByCategory(String category) {
-    return _firestore
-        .collection(AppConstants.postsCollection)
-        .where('category', isEqualTo: category)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => PostModel.fromMap(doc.data(), doc.id))
-            .toList());
+    return getPosts().map((posts) =>
+        posts.where((post) => post.category == category).toList());
   }
 
-  // Crear publicación
   Future<bool> createPost(PostModel post) async {
     try {
       await _firestore
@@ -42,7 +35,6 @@ class FirestoreService {
     }
   }
 
-  // Marcar interés en una publicación
   Future<void> toggleInterest(String postId, String userId) async {
     final ref = _firestore
         .collection(AppConstants.postsCollection)
