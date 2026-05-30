@@ -86,3 +86,13 @@ flutter run
 ## 📄 Licencia
 
 MIT License — libre para uso educativo.
+
+## 📸 Screenshots
+
+| Onboarding | Login | Home |
+|---|---|---|
+| ![Onboarding 1](screenshots/onboarding_1.png) | ![Login](screenshots/login_1.png) | ![Home](screenshots/home.png) |
+
+| Crear Publicación | Perfil | Planes Premium |
+|---|---|---|
+| ![Crear Post](screenshots/form_post.png) | ![Perfil](screenshots/profile_config.png) | ![Planes](screenshots/plans_1.png) |
